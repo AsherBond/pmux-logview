@@ -1,0 +1,97 @@
+<!DOCTYPE HTML>
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <title>pmux logview</title>
+        <meta http-equiv="content-type" content="text/html;charset=utf-8" />
+        <link rel="stylesheet" type="text/css" href="/css/normalize.css" />
+        <script type="text/javascript" src="/js/jquery-1.9.1.js"></script>
+        <script type="text/javascript" src="/js/jquery-ui-1.10.0.js"></script>
+        <script type="text/javascript" src="/js/jquery.dataTables.min.js"></script>
+        <script type="text/javascript" src="/js/d3.v3.min.js"></script>
+        <script type="text/javascript" src="/js/jquery.activity-indicator-1.0.0.min.js"></script>
+        <script type="text/javascript" src="/js/tchart.js"></script>
+        <script type="text/javascript" src="/js/pmux-logview-base.js"></script>
+        <script type="text/javascript" src="/js/pmux-logview-index.js"></script>
+        <link rel="stylesheet" type="text/css" href="/css/jquery-ui-1.10.0.css" />
+        <link rel="stylesheet" type="text/css" href="/css/jquery.dataTables.css" />
+        <link rel="stylesheet" type="text/css" href="/css/tchart.css" />
+        <link rel="stylesheet" type="text/css" href="/css/pmux-logview.css" />
+    </head>
+    <body class="body-font background-gradient background-no-repeat">
+        <div>
+            <table class="title-line-width title-border">
+                <tr>
+                    <td class="title-line-width title-padding title-font">pmux logview</td>
+                </tr>
+            </table>
+        </div>
+        <div class="container">
+           <div id="user-name" class="container-item container-item-left user-name-adjust">
+               <table>
+                   <tr>
+                       <td class="cell-padding">user:</td>
+                       <td id="user-name" class="cell-padding"><%= @user %></td>
+                   </tr>
+               </table>
+           </div>
+           <button id="reload-button" type="button" class="container-item container-item-right button-color button-normalize ui-corner-all">
+               <span class="icon-space">リロードの停止</span>
+               <span class="button-icon-adjust ui-icon ui-icon-stop"></span>
+           </button>
+        </div>
+        <div class="tabs-container">
+            <div id="main-tabs">
+                <ul>
+                    <li><a href="#job-log">job log</a></li>
+                    <li><a href="#dispatcher-log">dispatcher log</a></li>
+                    <li><a href="#job-chart">job chart</a></li>
+               </ul>
+               <div id="job-log">
+                   <table id="job-log-table" class="border">
+                       <thead>
+                            <tr>
+                                <th>id</th>
+                                <th>mapper</th>
+                                <th>start time</th>
+                                <th>end time</th>
+                                <th>elapsed time</th>
+                            </tr>
+                       </thead>
+                       <tbody id="job-log-table-body">
+                       </tbody>
+                   </table>
+                   <div>
+                       <button id="more-button" type="button" class="button-color button-normalize ui-corner-all">
+                           <span class="button-text-center">もっとみる</span>
+                       </button>
+                   </div>
+               </div>
+               <div id="dispatcher-log">
+                   <table id="dispatcher-log-table" class="border">
+                       <thead>
+                           <tr>
+                                <th>log message</th>
+                           </tr>
+                       </thead>
+                       <tbody id="dispatcher-log-table-body">
+                       </tbody>
+                   </table>
+               </div>
+               <div id="job-chart">
+                 <div class="job-chart-container background-gradient">
+                   <div id="job-chart-tchart">
+                   </div>
+                 <div>
+               </div>
+           </div>
+        </div>
+        <div id="task-tooltip" class="border background-gradient ui-corner-all task-tooltip">
+        </div>
+        <div id="indicator">
+        </div>
+        <div id="dialog">
+           <div id="dialog-message">
+           </div>
+        </div>
+    </body>
+</html>

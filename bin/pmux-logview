@@ -1,0 +1,4 @@
+#!/usr/bin/env ruby
+require 'pmux-logview'
+app = Pmux::LogView::Application.new()
+app.run()

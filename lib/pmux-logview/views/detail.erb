@@ -1,0 +1,58 @@
+<!DOCTYPE HTML>
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <title>pmux logview</title>
+        <meta http-equiv="content-type" content="text/html;charset=utf-8" />
+        <link rel="stylesheet" type="text/css" href="/css/normalize.css" />
+        <script type="text/javascript" src="/js/jquery-1.9.1.js"></script>
+        <script type="text/javascript" src="/js/jquery-ui-1.10.0.js"></script>
+        <script type="text/javascript" src="/js/jquery.dataTables.min.js"></script>
+        <script type="text/javascript" src="/js/d3.v3.min.js"></script>
+        <script type="text/javascript" src="/js/jquery.activity-indicator-1.0.0.min.js"></script>
+        <script type="text/javascript" src="/js/tchart.js"></script>
+        <script type="text/javascript" src="/js/pmux-logview-base.js"></script>
+        <script type="text/javascript" src="/js/pmux-logview-detail.js"></script>
+        <link rel="stylesheet" type="text/css" href="/css/jquery-ui-1.10.0.css" />
+        <link rel="stylesheet" type="text/css" href="/css/jquery.dataTables.css" />
+        <link rel="stylesheet" type="text/css" href="/css/tchart.css" />
+        <link rel="stylesheet" type="text/css" href="/css/pmux-logview.css" />
+    </head>
+    <body class="body-font background-gradient background-no-repeat">
+        <div id="detail-title">
+            <table class="title-line-width title-border">
+                <tr>
+                    <td class="title-line-width title-padding title-font">pmux logview</td>
+                </tr>
+            </table>
+        </div>
+        <div id="detail-header" class="container detail-header">
+           <div id="user-name" class="container-item container-item-left-detail user-name-adjust">
+               <table>
+                   <tr>
+                       <td class="cell-padding">user:</td>
+                       <td id="user-name" class="cell-padding"><%= @user %></td>
+                   </tr>
+               </table>
+           </div>
+           <button id="reload-button" type="button" class="container-item container-item-right-detail button-color button-normalize ui-corner-all">
+               <span class="icon-space">リロードの停止</span>
+               <span class="button-icon-adjust ui-icon ui-icon-stop"></span>
+           </button>
+        </div>
+        <div id="detail-body" class="detail-body" data-job-id="<%= @job_id %>">
+            <div id="detail-chart-header"">
+            </div>
+            <br>
+            <div id="detail-chart-tchart"">
+            </div>
+        </div>
+        <div id="task-tooltip" class="border background-gradient ui-corner-all task-tooltip">
+        </div>
+        <div id="indicator">
+        </div>
+        <div id="dialog">
+            <div id="dialog-message">
+            </div>
+        </div>
+    </body>
+</html>

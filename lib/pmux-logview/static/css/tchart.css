@@ -1,0 +1,124 @@
+line.actorsSummaryBarChartCanvasLine {
+    stroke: #ACCDE8; 
+}
+line.actorsSwimlaneChartLaneLine {
+    stroke: #ACCDE8; 
+}
+line.tasksGanttChartLaneLine {
+    stroke: #ACCDE8; 
+}
+line.actorsSwimlaneChartCanvasLine {
+    stroke: #ACCDE8; 
+}
+line.tasksGanttChartCanvasLine {
+    stroke: #ACCDE8; 
+}
+line.tasksBarChartCanvasLine {
+    stroke: #ACCDE8; 
+}
+button.tchartButton  {
+    background-color: #D7EBF9;
+    background-position: 0 0, 0 0;
+    background-image: -ms-linear-gradient(top, #F2F5F7 0%, #D7EBF9 100%);
+    background-image: -moz-linear-gradient(top, #F2F5F7 0%, #D7EBF9 100%);
+    background-image: -o-linear-gradient(top, #F2F5F7 0%, #D7EBF9 100%);
+    background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #F2F5F7), color-stop(1, #D7EBF9));
+    background-image: -webkit-linear-gradient(top, #F2F5F7 0%, #D7EBF9 100%);
+    background-image: linear-gradient(to bottom, #F2F5F7 0%, #D7EBF9 100%);
+    -ms-filter: "progid:DXImageTransform.Microsoft.gradient(GradientType=0,startColorstr='#F2F5F7', endColorstr='#D7EBF9')";
+}
+g.actorsSummaryBarChartAxis > path {
+    fill: #0070A3;
+}
+g.actorsSwimlaneChartAxis > path {
+    fill: #0070A3;
+}
+g.actorsSwimlaneChartRelAxis > path {
+    fill: #0070A3;
+}
+g.tasksGanttChartAxis > path {
+    fill: #0070A3;
+}
+g.tasksGanttChartRelAxis > path {
+    fill: #0070A3;
+}
+g.tasksBarChartAxis > path {
+    fill: #0070A3;
+}
+g.actorsSummaryBarChartAxis > g > line {
+    stroke: #0070A3;
+}
+g.actorsSwimlaneChartAxis > g > line {
+    stroke: #A37000;
+}
+g.actorsSwimlaneChartRelAxis > g > line {
+    stroke: #0070A3;
+}
+g.tasksGanttChartAxis > g > line {
+    stroke: #A37000;
+}
+g.tasksGanttChartRelAxis > g > line {
+    stroke: #0070A3;
+}
+g.tasksBarChartAxis > g > line {
+    stroke: #0070A3;
+}
+rect.actorsSwimlaneChartTaskRect {
+    cursor:pointer;
+}
+rect.tasksGanttChartTaskRect {
+    cursor:pointer;
+}
+rect.tasksBarChartTaskRect {
+    cursor:pointer;
+}
+rect.actorsSummaryBarChartBrushBackgroundRect {
+    fill: #EFF8FF;
+}
+rect.actorsSwimlaneChartBrushBackgroundRect {
+    fill: #EFF8FF;
+}
+rect.tasksGanttChartBrushBackgroundRect {
+    fill: #EFF8FF;
+}
+rect.tasksBarChartBrushBackgroundRect {
+    fill: #EFF8FF;
+}
+.actorsSummaryBarChartBrush .extent {
+    stroke: gray;
+    fill: blue;
+    fill-opacity: 0.1;
+}
+.actorsSwimlaneChartBrush .extent {
+    stroke: gray;
+    fill: blue;
+    fill-opacity: 0.1;
+}
+.tasksGanttChartBrush .extent {
+    stroke: gray;
+    fill: blue;
+    fill-opacity: 0.1;
+}
+.tasksBarChartBrush .extent {
+    stroke: gray;
+    fill: blue;
+    fill-opacity: 0.1;
+}
+.datePickerContainer {
+    margin-right: 20px;
+}
+.chartContainer {
+    margin-top: 20px;
+}
+div.actorsSummaryBarChart > div.optionsContainer {
+    margin-top: 20px;
+}
+div.actorsSwimlaneChart > div.optionsContainer {
+    margin-top: 20px;
+}
+div.tasksGanttChart > div.optionsContainer {
+    margin-top: 20px;
+}
+div.tasksBarChart > div.optionsContainer {
+    margin-top: 20px;
+}
