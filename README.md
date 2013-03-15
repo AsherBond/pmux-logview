@@ -53,16 +53,18 @@ pmux log viwer
   * basic auth configuration (default path = /etc/pmux-logview/password)
      * yaml format file
 
+```lang
     ---
     user1:
         pass: pass1
     user2:
         pass: pass2
+```
 
 ### Rack appliction
   * config.ru
 
-    ---
+```lang
     require 'pmux-logview'
     configure do
       # something
@@ -76,21 +78,28 @@ pmux log viwer
                                       "use_syslog" => true,
                                       "syslog_facility" => "user" })
     run Pmux::LogView::Controller
+```
 
 ## Package createting
 
   * create gem
+
     $ make
 
   * install
+
+```lang
     # make install
     or
-    # gem install pkg//pmux-logview-*.gem
+    # gem install pkg/pmux-logview-*.gem
+```
 
   * create rpm
+
     $ make rpmbuild
 
   * install rpm
+
     $ rpm -ivh rpm/RPMS/noarch/rubygems-pmux-logview-*.noarch.rpm
 
 ## Behaiver
