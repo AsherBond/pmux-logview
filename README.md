@@ -84,7 +84,9 @@ pmux log viwer
 
   * create gem
 
+```lang
     $ make
+```
 
   * install
 
@@ -96,11 +98,15 @@ pmux log viwer
 
   * create rpm
 
+```lang
     $ make rpmbuild
+```
 
   * install rpm
 
+```lang
     $ rpm -ivh rpm/RPMS/noarch/rubygems-pmux-logview-*.noarch.rpm
+```
 
 ## Behaiver
     - search log file in home directory of pmux user
