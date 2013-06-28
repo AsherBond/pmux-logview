@@ -5,7 +5,7 @@
 %define ruby_verid %{_ruby_verid}
 %endif
 %define rbname pmux-logview
-%define version 0.2.2
+%define version 0.3.4
 %define release 1
 
 Summary: Pmux log viewer

@@ -8,7 +8,7 @@ module Pmux
       @@pmux_log_path = ".pmux/log"
       @@pmux_old_log_path = ".pmux/log/old"
       @@dispatcher_log = "dispatcher.log"
-      @@max_dispatcher_log_size = 1024 * 64 # 128k
+      @@max_dispatcher_log_size = 1024 * 128 # 128k
 
       @@document_re = Regexp.new("^---")
       @@header_re = Regexp.new("^:[a-z_]+:")
@@ -28,6 +28,8 @@ module Pmux
       @@task_welapse_re = Regexp.new("^  welapse:")
       @@task_elapse_re = Regexp.new("^  elapse:")
       @@job_finished_at_re = Regexp.new("^:job_finished_at:")
+      @@error_status_re = Regexp.new("^:error_status:")
+      @@error_message_re = Regexp.new("^:error_message:")
       @@quote_re = Regexp.new("^['\"]|['\"]$")
 
       @logger = nil
@@ -49,21 +51,25 @@ module Pmux
         start_time = nil
         end_time = nil
         File.open(file) {|f|
+          doc1_buffer = ""
           doc_cnt = 0
           f.each_line {|ln|
             if @@document_re =~ ln
+              if doc_cnt == 1
+                  new_doc = YAML.load(doc1_buffer)
+                  job["mapper"] = new_doc[:mapper].to_s.encode('UTF-8', {:invalid => :replace, :undef => :replace, :replace => '?'})
+              end
               doc_cnt += 1
-            elsif doc_cnt == 1 && (@@job_started_at_re =~ ln || @@start_time_re =~ ln)
+            elsif doc_cnt == 1 && (@@job_started_at_re =~ ln ||  @@start_time_re =~ ln)
               empty, key, value = ln.split(":", 3)
               start_time = DateTime::parse(value.strip())
               job["start_time_msec"] = start_time.strftime("%Q") 
               job["start_time"] = start_time.strftime("%Y-%m-%d %H:%M:%S")
-            elsif doc_cnt == 1 && @@map_tasks_re =~ ln
+            elsif doc_cnt == 1 && (@@map_tasks_re =~ ln ||  @@reduce_tasks_re =~ ln)
               empty, key, value = ln.split(":", 3)
               job[key] = value.strip().to_i()
-            elsif doc_cnt == 1 && @@mapper_re =~ ln
-              empty, key, value = ln.split(":", 3)
-              job[key] = value.strip()
+            elsif doc_cnt == 1
+              doc1_buffer += ln
             elsif doc_cnt == 2 && @@task_id_re =~ ln
               task_cnt += 1
             elsif doc_cnt == 3 && @@job_finished_at_re =~ ln
@@ -72,6 +78,13 @@ module Pmux
               job["end_time_msec"] = end_time.strftime("%Q") 
               job["end_time"] = end_time.strftime("%Y-%m-%d %H:%M:%S")
               cachable = true
+            elsif doc_cnt == 3 && @@error_status_re =~ ln
+              empty, key, value = ln.split(":", 3)
+              job[key] = value.strip()
+              cachable = true
+            elsif doc_cnt == 3 && @@error_message_re =~ ln
+              empty, key, value = ln.split(":", 3)
+              job[key] = value.strip().gsub(@@quote_re, "")
             end
           }
         }
@@ -147,12 +160,20 @@ module Pmux
                 break
               end
             when "end_time"
-              if job["end_time_msec"].to_i > jobs[id]["end_time_msec"].to_i
+              if !job["error_status"].nil?
+                insert_idx = idx
+              elsif !jobs[id]["error_status"].nil?
+                next
+              elsif job["end_time_msec"].to_i > jobs[id]["end_time_msec"].to_i
                 insert_idx = idx
                 break
               end
             when "elapsed_time"
-              if job["elapsed_time"].to_i > jobs[id]["elapsed_time"].to_i
+              if !job["error_status"].nil?
+                insert_idx = idx
+              elsif !jobs[id]["error_status"].nil?
+                next
+              elsif job["elapsed_time"].to_i > jobs[id]["elapsed_time"].to_i
                 insert_idx = idx
                 break
               end
@@ -175,12 +196,20 @@ module Pmux
                 break
               end
             when "end_time"
-              if job["end_time_msec"].to_i < jobs[id]["end_time_msec"].to_i
+              if !job["error_status"].nil?
+                next
+              elsif !jobs[id]["error_status"].nil?
+                insert_idx = idx
+              elsif job["end_time_msec"].to_i < jobs[id]["end_time_msec"].to_i
                 insert_idx = idx
                 break
               end
             when "elapsed_time"
-              if job["elapsed_time"].to_i < jobs[id]["elapsed_time"].to_i
+              if !job["elapsed_time"].nil?
+                next
+              elsif !jobs[id]["elapsed_time"].nil?
+                insert_idx = idx
+              elsif job["elapsed_time"].to_i < jobs[id]["elapsed_time"].to_i
                 insert_idx = idx
                 break
               end
@@ -250,11 +279,23 @@ module Pmux
       def full_parse file_path
         documents = []
         File.open(file_path) {|f|
+          doc1_buffer = ""
+          doc1_param = {}
           doc_cnt = 0
           new_doc = nil
           task_id = nil
           f.each_line {|ln|
             if @@document_re =~ ln
+              if doc_cnt == 1
+                  new_doc = YAML.load(doc1_buffer)
+                  new_doc[:job_started_at] = doc1_param["job_started_at"] if doc1_param["job_started_at"]
+                  new_doc[:invoked_at] = doc1_param["invoked_at"] if doc1_param["invoked_at"]
+                  new_doc[:start_time] = doc1_param["start_time"] if doc1_param["start_time"]
+                  new_doc[:mapper] = new_doc[:mapper].to_s.encode('UTF-8', {:invalid => :replace, :undef => :replace, :replace => '?'}) if new_doc[:mapper]
+                  new_doc[:reducer] = new_doc[:reducer].to_s.encode('UTF-8', {:invalid => :replace, :undef => :replace, :replace => '?'}) if new_doc[:reducer]
+                  new_doc[:params][:mapper] = new_doc[:params][:mapper].to_s.encode('UTF-8', {:invalid => :replace, :undef => :replace, :replace => '?'}) if new_doc.key?(:params) && new_doc[:params][:mapper]
+                  new_doc[:params][:job_name] = new_doc[:params][:job_name].to_s.encode('UTF-8', {:invalid => :replace, :undef => :replace, :replace => '?'}) if new_doc.key?(:params) && new_doc[:params][:job_name]
+              end
               if !new_doc.nil?
                 new_doc.delete(task_id) if doc_cnt == 2 && !task_id.nil? && new_doc[task_id].length < 5
                 documents.push(new_doc)
@@ -265,19 +306,9 @@ module Pmux
             elsif doc_cnt == 1 && (@@job_started_at_re =~ ln || @@invoked_at_re =~ ln || @@start_time_re =~ ln)
               empty, key, value = ln.split(":", 3)
               time = DateTime::parse(value.strip())
-              new_doc[key] = time
-            elsif doc_cnt == 1 && (@@map_tasks_re =~ ln || @@tasksize_re =~ ln || @@reduce_tasks_re =~ ln)
-              empty, key, value = ln.split(":", 3)
-              new_doc[key] = value.strip().to_i()
-            elsif doc_cnt == 1 && @@params_re =~ ln
-              empty, key, value = ln.split(":", 3)
-              new_doc["params"] = {}
-            elsif doc_cnt == 1 && @@header_re =~ ln
-              empty, key, value = ln.split(":", 3)
-              new_doc[key] = value.strip().gsub(@@quote_re, "")
-            elsif doc_cnt == 1 && @@header_params_re =~ ln
-              empty, key, value = ln.split(":", 3)
-              new_doc["params"][key] = value.strip().gsub(@@quote_re, "")
+              doc1_param[key] = time
+            elsif doc_cnt == 1
+              doc1_buffer += ln
             elsif doc_cnt == 2 && @@task_id_re =~ ln
               task_id, empty = ln.split(":", 2)
               new_doc[task_id] = {}
@@ -318,26 +349,20 @@ module Pmux
             return nil
           end
         end
-        #begin
-          #f = File.open(file_path)
-          #docs = YAML::load_stream(f)
-          docs = full_parse(file_path)
-          parse_data = []
-          for idx in [0, 1, 2]
-            if idx == 0 && !docs[idx].nil?
-              docs[idx]["job_started_at_msec"] = docs[idx]["job_started_at"].strftime("%Q") if !docs[idx]["job_started_at"].nil?
-            elsif idx == 2 && !docs[idx].nil?
-              docs[idx]["job_finished_at_msec"] = docs[idx]["job_finished_at"].strftime("%Q") if !docs[idx]["job_finished_at"].nil?
-            end
-            if docs[idx].nil?
-                parse_data.push({})
-            else
-                parse_data.push(docs[idx])
-            end
+        docs = full_parse(file_path)
+        parse_data = []
+        for idx in [0, 1, 2]
+          if idx == 0 && !docs[idx].nil?
+            docs[idx][:job_started_at_msec] = docs[idx][:job_started_at].strftime("%Q") if !docs[idx][:job_started_at].nil?
+          elsif idx == 2 && !docs[idx].nil?
+            docs[idx]["job_finished_at_msec"] = docs[idx]["job_finished_at"].strftime("%Q") if !docs[idx]["job_finished_at"].nil?
           end
-        #ensure
-        #  f.close() if !f.nil?
-        #end
+          if docs[idx].nil?
+              parse_data.push({})
+          else
+              parse_data.push(docs[idx])
+          end
+        end
         return parse_data
       end
 

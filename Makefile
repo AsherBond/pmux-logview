@@ -1,16 +1,17 @@
 RUBY_VERID?=default
+RAKE?=rake
 
 default: build
 
 build: clean
-	rake build
+	$(RAKE) build
 
 install: clean
-	rake install
+	$(RAKE) install
 
 rpmbuild: clean
 	cd rpm && make clean
-	rake build
+	$(RAKE) build
 	cd rpm && make RUBY_VERID=$(RUBY_VERID)
 
 clean:

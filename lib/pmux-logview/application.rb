@@ -61,7 +61,7 @@ module Pmux
         @host = @config["host"] if @config["host"]
         @port = @config["port"] if @config["port"]
         Controller.setup(@config)
-        Controller.run! :host =>@host , :port => @port
+        Controller.run! :bind => @host, :host => @host, :port => @port
       end
     end
   end

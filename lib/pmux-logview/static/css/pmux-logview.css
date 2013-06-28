@@ -133,7 +133,7 @@ table.dataTable tr.even td.sorting_3 { background-color: #E9F9FF; }
 #task-tooltip {
     position: absolute ! important;
     opacity: 0.94;
-    z-index: 10;
+    z-index: 100;
     font-family: sans-serif;
     font-size: 16px;
 }

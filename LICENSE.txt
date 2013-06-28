@@ -1,4 +1,4 @@
-Copyright (c) 2013 kakine
+Copyright (c) 2013, Internet Initiative Japan Inc.
 
 MIT License
 

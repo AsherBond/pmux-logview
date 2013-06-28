@@ -55,6 +55,6 @@ module Pmux
       end
     end
 
-    helpers AuthHelper
+    Sinatra.helpers AuthHelper
   end
 end

@@ -27,7 +27,7 @@ fi
 prog=pmux-logview
 exec=${PMUX_LOGVIEW-/usr/local/bin/pmux-logview}
 config=${CONFIG-/etc/pmux-logview/pmux-logview.conf}
-user=${USER-root}
+user=${PMUX_LOGVIEW_USER-root}
 pidfile=${PIDFILE-/var/run/pmux-logview.pid}
 lockfile=${LOCKFILE-/var/lock/subsys/pmux-logview}
 [ -e /etc/sysconfig/${prog} ] && . /etc/sysconfig/${prog}
